@@ -1,1015 +1,738 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-<title>AURELIA — Luxury Retail, POS & GST Commerce Suite</title>
-<style>
-  :root {
-    --bg: #FAF9F6;
-    --surface: #FFFFFF;
-    --charcoal: #121418;
-    --charcoal-2: #1D2128;
-    --gold: #C6A25E;
-    --gold-dark: #A68342;
-    --gold-soft: #F6EFE2;
-    --text: #1A1D23;
-    --muted: #64748B;
-    --border: #E6E2D8;
-    --success: #15803D;
-    --success-bg: #DCFCE7;
-    --danger: #B91C1C;
-    --danger-bg: #FEE2E2;
-    --warn: #B45309;
-    --warn-bg: #FEF3C7;
-    --radius: 14px;
-    --shadow: 0 8px 28px rgba(18, 20, 24, 0.06);
-    --shadow-lg: 0 20px 50px rgba(18, 20, 24, 0.16);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; }
-  html, body {
-    margin: 0; padding: 0; width: 100%; overflow-x: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
-    background: var(--bg); color: var(--text); line-height: 1.5;
-    -webkit-tap-highlight-color: transparent;
-  }
-  img { max-width: 100%; display: block; }
-  button, input, select, textarea { font-family: inherit; font-size: 14px; }
-  button { cursor: pointer; border: none; background: none; }
-  a { color: inherit; text-decoration: none; }
-  h1, h2, h3, h4, .serif { font-family: Georgia, "Times New Roman", serif; margin: 0; }
-  p { margin: 0; }
-
-  .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 16px; }
-  .hidden { display: none !important; }
-
-  /* Workspace Switcher Bar */
-  .workspace-bar {
-    background: var(--charcoal); color: #fff; border-bottom: 1px solid rgba(255,255,255,0.08);
-    position: sticky; top: 0; z-index: 90;
-  }
-  .workspace-inner {
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    padding: 8px 16px; max-width: 1280px; margin: 0 auto;
-    overflow-x: auto; scrollbar-width: none;
-  }
-  .workspace-inner::-webkit-scrollbar { display: none; }
-  .ws-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 8px #22C55E; flex-shrink: 0; }
-  .ws-label { font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gold); font-weight: 700; white-space: nowrap; }
-  .ws-tabs { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-  .ws-tab {
-    padding: 7px 13px; border-radius: 999px; font-size: 12px; font-weight: 600;
-    color: #CBD5E1; background: rgba(255,255,255,0.06); white-space: nowrap; transition: 0.2s;
-  }
-  .ws-tab:hover { color: #fff; background: rgba(255,255,255,0.12); }
-  .ws-tab.active { background: var(--gold); color: var(--charcoal); }
-  .ws-reset {
-    padding: 6px 11px; border-radius: 999px; font-size: 11px; font-weight: 600;
-    color: #FCA5A5; border: 1px solid rgba(252,165,165,0.3); white-space: nowrap; flex-shrink: 0;
-  }
-  .ws-reset:hover { background: rgba(185,28,28,0.25); }
-
-  /* Announcement Bar */
-  .announcement {
-    background: linear-gradient(90deg, #1E1B16, #2E261A, #1E1B16);
-    color: #F3E5C8; text-align: center; padding: 7px 12px; font-size: 12px; letter-spacing: 0.4px;
-  }
-  .announcement strong { color: var(--gold); }
-
-  /* Store Header */
-  .site-header {
-    background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border); position: sticky; top: 45px; z-index: 80;
-  }
-  .header-inner {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    padding: 12px 16px; max-width: 1280px; margin: 0 auto;
-  }
-  .brand-logo { display: flex; align-items: center; gap: 9px; flex-shrink: 0; }
-  .brand-mark {
-    width: 34px; height: 34px; border-radius: 10px; background: var(--charcoal);
-    color: var(--gold); display: flex; align-items: center; justify-content: center;
-    font-family: Georgia, serif; font-weight: 700; font-size: 18px;
-  }
-  .brand-name { font-family: Georgia, serif; font-size: 20px; font-weight: 700; letter-spacing: 2px; color: var(--charcoal); line-height: 1; }
-  .brand-sub { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
-  .header-search { flex: 1; max-width: 440px; position: relative; }
-  .header-search input {
-    width: 100%; padding: 10px 14px 10px 38px; border-radius: 999px;
-    border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none;
-  }
-  .header-search input:focus { border-color: var(--gold); background: #fff; }
-  .header-search .search-ico { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; }
-  .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .icon-btn {
-    position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    min-width: 40px; height: 40px; padding: 0 12px; border-radius: 999px;
-    border: 1px solid var(--border); background: #fff; color: var(--charcoal); font-weight: 600; font-size: 13px;
-    transition: 0.2s;
-  }
-  .icon-btn:hover { border-color: var(--gold); background: var(--gold-soft); }
-  .badge-count {
-    min-width: 19px; height: 19px; padding: 0 5px; border-radius: 999px;
-    background: var(--charcoal); color: var(--gold); font-size: 11px; font-weight: 700;
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-
-  /* Buttons */
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 11px 18px; border-radius: 10px; font-weight: 600; font-size: 14px;
-    transition: 0.2s; min-height: 44px; white-space: nowrap;
-  }
-  .btn-primary { background: var(--charcoal); color: #fff; }
-  .btn-primary:hover { background: #262B35; }
-  .btn-gold { background: var(--gold); color: var(--charcoal); }
-  .btn-gold:hover { background: var(--gold-dark); color: #fff; }
-  .btn-outline { border: 1px solid var(--border); background: #fff; color: var(--charcoal); }
-  .btn-outline:hover { border-color: var(--charcoal); }
-  .btn-danger { background: var(--danger-bg); color: var(--danger); }
-  .btn-success { background: var(--success); color: #fff; }
-  .btn-sm { padding: 7px 12px; font-size: 12px; min-height: 34px; border-radius: 8px; }
-  .btn-full { width: 100%; }
-
-  /* Hero Section */
-  .hero {
-    margin: 18px auto 24px; border-radius: 20px; overflow: hidden;
-    background: linear-gradient(135deg, #111317 0%, #23201B 60%, #3A2E1E 100%);
-    color: #fff; display: grid; grid-template-columns: 1.2fr 0.8fr; align-items: center;
-    box-shadow: var(--shadow-lg);
-  }
-  .hero-content { padding: 40px 36px; }
-  .hero-tag {
-    display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px;
-    background: rgba(198,162,94,0.16); color: var(--gold); font-size: 11px; font-weight: 700;
-    letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 16px;
-  }
-  .hero h1 { font-size: clamp(26px, 4vw, 46px); line-height: 1.12; margin-bottom: 14px; font-weight: 700; }
-  .hero p { color: #CBD5E1; font-size: 15px; max-width: 520px; margin-bottom: 22px; }
-  .hero-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
-  .flash-box {
-    display: inline-flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 12px;
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap;
-  }
-  .flash-timer { font-family: monospace; font-size: 15px; font-weight: 700; color: var(--gold); letter-spacing: 1px; }
-  .hero-media { height: 100%; min-height: 340px; position: relative; overflow: hidden; }
-  .hero-media img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
-  .hero-badge-card {
-    position: absolute; bottom: 18px; left: 18px; right: 18px;
-    background: rgba(18,20,24,0.82); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 12px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;
-  }
-
-  /* Trust Strip */
-  .trust-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px;
-  }
-  .trust-card {
-    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 14px 16px; display: flex; align-items: center; gap: 12px;
-  }
-  .trust-ico {
-    width: 38px; height: 38px; border-radius: 10px; background: var(--gold-soft);
-    color: var(--gold-dark); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
-  }
-  .trust-card h4 { font-family: inherit; font-size: 13px; font-weight: 700; }
-  .trust-card span { font-size: 12px; color: var(--muted); }
-
-  /* Section Header & Filters */
-  .section-head {
-    display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
-    margin: 26px 0 16px; flex-wrap: wrap;
-  }
-  .section-head h2 { font-size: clamp(22px, 3vw, 30px); color: var(--charcoal); }
-  .section-head p { font-size: 13px; color: var(--muted); margin-top: 3px; }
-  .filter-bar {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    margin-bottom: 18px; flex-wrap: wrap;
-  }
-  .cat-pills { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; max-width: 100%; scrollbar-width: none; }
-  .cat-pills::-webkit-scrollbar { display: none; }
-  .cat-pill {
-    padding: 8px 15px; border-radius: 999px; border: 1px solid var(--border); background: #fff;
-    color: var(--text); font-size: 13px; font-weight: 600; white-space: nowrap; transition: 0.2s;
-  }
-  .cat-pill.active, .cat-pill:hover { background: var(--charcoal); color: var(--gold); border-color: var(--charcoal); }
-  .sort-select {
-    padding: 9px 14px; border-radius: 10px; border: 1px solid var(--border); background: #fff;
-    color: var(--text); font-weight: 500; outline: none;
-  }
-
-  /* Product Grid */
-  .product-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
-  }
-  .product-card {
-    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
-    overflow: hidden; display: flex; flex-direction: column; transition: transform 0.22s, box-shadow 0.22s;
-  }
-  .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
-  .prod-img-wrap {
-    position: relative; aspect-ratio: 4/3; background: #EFECE6; overflow: hidden; cursor: pointer;
-  }
-  .prod-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
-  .product-card:hover .prod-img-wrap img { transform: scale(1.05); }
-  .prod-badge {
-    position: absolute; top: 10px; left: 10px; background: var(--charcoal); color: var(--gold);
-    font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 6px;
-  }
-  .wish-btn {
-    position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%;
-    background: rgba(255,255,255,0.92); color: var(--muted); display: flex; align-items: center; justify-content: center;
-    font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  .wish-btn.active { color: #E11D48; }
-  .prod-body { padding: 14px; display: flex; flex-direction: column; flex: 1; gap: 6px; }
-  .prod-cat { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gold-dark); font-weight: 700; }
-  .prod-title { font-size: 15px; font-weight: 700; color: var(--charcoal); cursor: pointer; line-height: 1.3; }
-  .prod-rating { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-  .stars { color: #D97706; }
-  .prod-price-row { display: flex; align-items: baseline; gap: 8px; margin-top: auto; padding-top: 6px; flex-wrap: wrap; }
-  .price-now { font-size: 17px; font-weight: 800; color: var(--charcoal); }
-  .price-mrp { font-size: 12px; color: var(--muted); text-decoration: line-through; }
-  .stock-tag { font-size: 11px; font-weight: 600; color: var(--success); }
-  .stock-tag.low { color: var(--warn); }
-  .stock-tag.out { color: var(--danger); }
-  .prod-actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px; }
-
-  /* Testimonials & Newsletter */
-  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 12px; }
-  .testi-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
-  .newsletter-box {
-    margin: 34px 0; padding: 28px 24px; border-radius: 18px;
-    background: var(--charcoal); color: #fff; display: flex; align-items: center; justify-content: space-between;
-    gap: 18px; flex-wrap: wrap;
-  }
-  .newsletter-form { display: flex; gap: 8px; flex: 1; max-width: 420px; width: 100%; }
-  .newsletter-form input {
-    flex: 1; min-width: 0; padding: 11px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.08); color: #fff; outline: none;
-  }
-
-  /* Footer */
-  .site-footer {
-    background: var(--charcoal); color: #CBD5E1; padding: 40px 0 26px; margin-top: 40px;
-  }
-  .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 24px; margin-bottom: 28px; }
-  .site-footer h4 { color: #fff; font-size: 15px; margin-bottom: 12px; font-family: inherit; }
-  .site-footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
-  .footer-bottom {
-    border-top: 1px solid rgba(255,255,255,0.1); padding-top: 18px;
-    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px;
-  }
-  .crafted-credit {
-    display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px;
-    background: rgba(198,162,94,0.14); border: 1px solid rgba(198,162,94,0.35);
-    color: var(--gold); font-weight: 700; letter-spacing: 0.4px;
-  }
-
-  /* Admin, POS & Invoice Panels */
-  .panel-wrap { padding: 22px 0 40px; }
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
-  .kpi-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
-  .kpi-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; }
-  .kpi-val { font-size: 26px; font-weight: 800; color: var(--charcoal); margin-top: 6px; }
-  .kpi-sub { font-size: 12px; color: var(--success); margin-top: 4px; }
-  .card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 18px; }
-  .sub-tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 18px; padding-bottom: 4px; }
-  .sub-tab {
-    padding: 9px 16px; border-radius: 10px; background: #fff; border: 1px solid var(--border);
-    font-weight: 600; font-size: 13px; white-space: nowrap; color: var(--text);
-  }
-  .sub-tab.active { background: var(--charcoal); color: var(--gold); border-color: var(--charcoal); }
-
-  /* Responsive Table */
-  .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table { width: 100%; border-collapse: collapse; min-width: 640px; font-size: 13px; }
-  th, td { padding: 11px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
-  th { background: var(--bg); font-weight: 700; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; }
-  .status-pill {
-    display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700;
-  }
-  .st-confirmed, .st-paid, .st-delivered { background: var(--success-bg); color: var(--success); }
-  .st-pending, .st-packed, .st-shipped { background: var(--warn-bg); color: var(--warn); }
-  .st-cancelled { background: var(--danger-bg); color: var(--danger); }
-
-  /* Simple Pure CSS Bar Chart */
-  .chart-bars { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
-  .chart-row { display: grid; grid-template-columns: 110px 1fr 90px; align-items: center; gap: 10px; font-size: 13px; }
-  .bar-track { height: 12px; background: #F1EFEA; border-radius: 999px; overflow: hidden; }
-  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--charcoal), var(--gold)); border-radius: 999px; transition: width 0.4s; }
-
-  /* POS Layout */
-  .pos-grid { display: grid; grid-template-columns: 1.35fr 0.85fr; gap: 18px; align-items: start; }
-  .pos-catalog { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
-  .pos-item {
-    background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 10px;
-    text-align: left; transition: 0.15s; display: flex; flex-direction: column; gap: 6px;
-  }
-  .pos-item:hover { border-color: var(--gold); box-shadow: var(--shadow); }
-  .pos-item img { width: 100%; height: 90px; object-fit: cover; border-radius: 8px; }
-  .pos-mobile-toggle { display: none; gap: 8px; margin-bottom: 14px; }
-
-  /* Forms */
-  .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
-  .field.full { grid-column: 1 / -1; }
-  .field label { font-size: 12px; font-weight: 700; color: var(--muted); }
-  .field input, .field select, .field textarea {
-    width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border);
-    background: #fff; color: var(--text); outline: none;
-  }
-  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); }
-
-  /* Modals & Drawers — STRICTLY HIDDEN BY DEFAULT */
-  .overlay {
-    display: none; position: fixed; inset: 0; background: rgba(15, 18, 24, 0.62);
-    backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; padding: 16px;
-  }
-  .overlay.open { display: flex; }
-  .modal-box {
-    background: #fff; border-radius: 18px; width: 100%; max-width: 780px; max-height: 90vh;
-    overflow-y: auto; box-shadow: var(--shadow-lg); position: relative; padding: 22px;
-  }
-  .modal-head {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 16px;
-    position: sticky; top: -22px; background: #fff; z-index: 5; padding-top: 4px;
-  }
-  .close-x {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--bg); color: var(--charcoal);
-    font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .drawer-overlay {
-    display: none; position: fixed; inset: 0; background: rgba(15, 18, 24, 0.55);
-    z-index: 210; justify-content: flex-end;
-  }
-  .drawer-overlay.open { display: flex; }
-  .drawer-panel {
-    background: #fff; width: 100%; max-width: 420px; height: 100%; display: flex; flex-direction: column;
-    box-shadow: var(--shadow-lg);
-  }
-  .drawer-head { padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-  .drawer-body { flex: 1; overflow-y: auto; padding: 16px 18px; }
-  .drawer-foot { padding: 16px 18px; border-top: 1px solid var(--border); background: var(--bg); }
-
-  /* Product Detail Modal Layout */
-  .pd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-  .pd-main-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 14px; cursor: zoom-in; transition: transform 0.25s; }
-  .pd-main-img.zoomed { transform: scale(1.35); cursor: zoom-out; }
-  .pd-thumbs { display: flex; gap: 8px; margin-top: 10px; }
-  .pd-thumb { width: 62px; height: 52px; object-fit: cover; border-radius: 8px; border: 2px solid transparent; cursor: pointer; }
-  .pd-thumb.active { border-color: var(--gold); }
-  .variant-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-  .var-pill { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 12px; font-weight: 600; background: #fff; }
-  .var-pill.active { background: var(--charcoal); color: var(--gold); border-color: var(--charcoal); }
-
-  /* Invoice A4 Styling */
-  .invoice-sheet {
-    background: #fff; border: 1px solid #D1D5DB; border-radius: 12px; padding: 24px; color: #111;
-  }
-  .inv-top { display: flex; justify-content: space-between; gap: 16px; border-bottom: 2px solid var(--charcoal); padding-bottom: 14px; margin-bottom: 16px; flex-wrap: wrap; }
-  .inv-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; font-size: 13px; }
-  .thermal-sheet {
-    max-width: 320px; margin: 0 auto; font-family: monospace; font-size: 12px;
-    border: 1px dashed #9CA3AF; padding: 16px; background: #fff; color: #111;
-  }
-
-  /* Floating WhatsApp & Toast */
-  .wa-float {
-    position: fixed; right: 16px; bottom: 76px; z-index: 120;
-    background: #25D366; color: #fff; padding: 11px 16px; border-radius: 999px;
-    font-weight: 700; font-size: 13px; box-shadow: 0 8px 20px rgba(37,211,102,0.35);
-    display: inline-flex; align-items: center; gap: 7px;
-  }
-  .toast-wrap {
-    position: fixed; top: 58px; right: 16px; z-index: 300; display: flex; flex-direction: column; gap: 8px; pointer-events: none;
-  }
-  .toast {
-    background: var(--charcoal); color: #fff; padding: 11px 16px; border-radius: 10px;
-    border-left: 4px solid var(--gold); font-size: 13px; font-weight: 600; box-shadow: var(--shadow-lg);
-  }
-
-  /* Mobile Bottom Navigation (Android Optimized) */
-  .mobile-nav {
-    display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 150;
-    background: #fff; border-top: 1px solid var(--border); padding: 6px 4px;
-    grid-template-columns: repeat(5, 1fr); box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
-  }
-  .mob-nav-btn {
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-    padding: 5px 2px; font-size: 11px; font-weight: 600; color: var(--muted); position: relative;
-  }
-  .mob-nav-btn.active { color: var(--charcoal); }
-  .mob-nav-btn span.ico { font-size: 18px; line-height: 1; }
-
-  /* Responsive Breakpoints */
-  @media (max-width: 1024px) {
-    .product-grid { grid-template-columns: repeat(3, 1fr); }
-    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-    .trust-grid { grid-template-columns: repeat(2, 1fr); }
-    .pos-grid { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  @media (max-width: 768px) {
-    body { padding-bottom: 66px; }
-    .site-header { top: 44px; }
-    .header-inner { flex-wrap: wrap; padding: 10px 12px; gap: 8px; }
-    .header-search { order: 3; max-width: 100%; flex: 1 0 100%; }
-    .brand-name { font-size: 17px; }
-    .icon-btn .btn-txt { display: none; }
-    .hero { grid-template-columns: 1fr; margin: 12px auto 18px; border-radius: 16px; }
-    .hero-content { padding: 24px 18px; }
-    .hero-media { min-height: 220px; }
-    .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .prod-body { padding: 10px; }
-    .prod-title { font-size: 13px; }
-    .price-now { font-size: 15px; }
-    .prod-actions { grid-template-columns: 1fr; }
-    .testi-grid, .footer-grid, .pd-grid, .form-grid, .inv-meta-grid { grid-template-columns: 1fr; }
-    .pos-catalog { grid-template-columns: repeat(2, 1fr); }
-    .pos-mobile-toggle { display: flex; }
-    .pos-panel-hide-mob { display: none; }
-    .mobile-nav { display: grid; }
-    .wa-float { bottom: 74px; right: 12px; padding: 9px 13px; font-size: 12px; }
-    .modal-box { padding: 16px; border-radius: 14px; max-height: 92vh; }
-    .chart-row { grid-template-columns: 88px 1fr 75px; font-size: 12px; }
-  }
-
-  @media (max-width: 390px) {
-    .product-grid { grid-template-columns: 1fr; }
-    .trust-grid { grid-template-columns: 1fr; }
-  }
-
-  /* Clean Print Mode for GST Invoices & Thermal Receipts */
-  @media print {
-    body * { visibility: hidden !important; }
-    #printArea, #printArea * { visibility: visible !important; }
-    #printArea {
-      position: fixed !important; left: 0; top: 0; width: 100%; background: #fff;
-      padding: 10px; border: none !important; box-shadow: none !important;
-    }
-    .no-print { display: none !important; }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>AURELIA — Luxury Retail & Commerce Suite</title>
+  <meta name="description" content="AURELIA Flagship eCommerce Platform with Storefront, Admin Dashboard, Retail POS, and Indian GST Billing. Crafted by Shahalam Laskar." />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<!-- Toast Container -->
-<div class="toast-wrap" id="toastWrap"></div>
-
-<!-- Top Workspace Switcher -->
-<div class="workspace-bar">
-  <div class="workspace-inner">
-    <div class="ws-left">
-      <span class="live-dot"></span>
-      <span class="ws-label">AURELIA Suite</span>
-    </div>
-    <div class="ws-tabs">
-      <button class="ws-tab active" data-view="storefront" onclick="switchView('storefront')">Storefront</button>
-      <button class="ws-tab" data-view="admin" onclick="switchView('admin')">Admin Dashboard</button>
-      <button class="ws-tab" data-view="pos" onclick="switchView('pos')">Retail POS</button>
-      <button class="ws-tab" data-view="invoices" onclick="switchView('invoices')">GST Invoices</button>
-    </div>
-    <button class="ws-reset" onclick="resetDemo()">Reset Demo</button>
-  </div>
-</div>
-
-<!-- ================= STOREFRONT VIEW ================= -->
-<section id="view-storefront">
-  <div class="announcement">
-    Festive Luxury Sale: Use code <strong>WELCOME10</strong> for 10% OFF or <strong>AURELIA500</strong> (₹500 off above ₹5,000) • Free Pan-India Delivery above ₹2,999
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    <span>FLASH SALE LIVE — Use <strong>WELCOME10</strong> for 10% OFF or <strong>AURELIA500</strong> for ₹500 OFF (Min ₹3,000)</span>
+    <span class="flash-pill" id="flash-timer">04:59:59</span>
   </div>
 
-  <header class="site-header">
+  <!-- Top Workspace Switcher (Demo Controls) -->
+  <div class="workspace-bar">
+    <div class="workspace-inner">
+      <div class="workspace-tabs" role="tablist">
+        <button class="ws-tab active" data-view="storefront" onclick="App.switchView('storefront')">Storefront</button>
+        <button class="ws-tab" data-view="admin" onclick="App.switchView('admin')">Admin Panel</button>
+        <button class="ws-tab" data-view="pos" onclick="App.switchView('pos')">Retail POS</button>
+        <button class="ws-tab" data-view="invoices" onclick="App.switchView('invoices')">GST Invoices</button>
+      </div>
+      <div class="workspace-actions">
+        <span class="demo-badge">● Local DB Active</span>
+        <button class="btn-ghost-sm" onclick="App.resetDemo()">Reset Demo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Header -->
+  <header class="site-header" id="site-header">
     <div class="header-inner">
-      <div class="brand-logo" onclick="switchView('storefront')" style="cursor:pointer;">
-        <div class="brand-mark">A</div>
+      <div class="brand-lockup" onclick="App.switchView('storefront')">
+        <span class="brand-monogram">A</span>
         <div>
           <div class="brand-name">AURELIA</div>
-          <div class="brand-sub">Flagship Commerce</div>
+          <div class="brand-sub">FLAGSHIP COMMERCE</div>
         </div>
       </div>
 
       <div class="header-search">
-        <span class="search-ico">&#128269;</span>
-        <input type="text" id="globalSearch" placeholder="Search watches, audio, bags, decor..." oninput="renderCatalog()" />
+        <input type="search" id="global-search" placeholder="Search watches, audio, fashion, SKU..." oninput="App.handleGlobalSearch(this.value)" />
       </div>
 
       <div class="header-actions">
-        <button class="icon-btn" onclick="openAccountModal('wishlist')" title="Wishlist">
-          <span>&#9825;</span>
-          <span class="badge-count" id="wishCount">0</span>
+        <button class="icon-btn" onclick="App.openAuthModal()" title="Account">
+          <span class="icon-svg">👤</span>
+          <span class="hide-sm" id="header-user-label">Account</span>
         </button>
-        <button class="icon-btn" onclick="openAccountModal('profile')" title="Account">
-          <span>&#128100;</span>
-          <span class="btn-txt" id="headerUserLabel">Account</span>
+        <button class="icon-btn" onclick="App.openWishlistDrawer()" title="Wishlist">
+          <span class="icon-svg">♡</span>
+          <span class="badge-count" id="wishlist-count">0</span>
         </button>
-        <button class="icon-btn" onclick="openCart()" title="Shopping Bag">
-          <span>&#128717;</span>
-          <span class="btn-txt">Bag</span>
-          <span class="badge-count" id="cartCount">0</span>
+        <button class="icon-btn cart-trigger" onclick="App.openCartDrawer()" title="Shopping Bag">
+          <span class="icon-svg">🛍</span>
+          <span class="badge-count gold" id="cart-count">0</span>
         </button>
       </div>
     </div>
   </header>
 
-  <main class="container">
-    <!-- Hero -->
-    <div class="hero">
+  <!-- ==================== VIEW 1: STOREFRONT ==================== -->
+  <main id="view-storefront" class="app-view active">
+    <!-- Hero Editorial Banner -->
+    <section class="hero-section">
       <div class="hero-content">
-        <div class="hero-tag">&#9733; Commercial Flagship Showcase</div>
-        <h1>Modern Luxury Retail, Unified Online &amp; In-Store.</h1>
-        <p>Experience a full-stack retail ecosystem featuring GST-compliant invoicing, live POS inventory sync, multi-step checkout, and an executive admin suite.</p>
+        <span class="eyebrow">AUTUMN / WINTER COMMERCIAL SHOWCASE</span>
+        <h1>Refined Luxury.<br />Seamless Commerce.</h1>
+        <p>Experience a complete commercial retail ecosystem — curated products, live inventory, instant Indian GST billing, and omnichannel POS.</p>
         <div class="hero-cta">
-          <button class="btn btn-gold" onclick="document.getElementById('catalogSection').scrollIntoView({behavior:'smooth'})">Explore Collection</button>
-          <button class="btn btn-outline" style="background:rgba(255,255,255,0.08);color:#fff;border-color:rgba(255,255,255,0.22);" onclick="switchView('pos')">Launch Retail POS</button>
+          <button class="btn-gold" onclick="document.getElementById('catalog-section').scrollIntoView({behavior:'smooth'})">Explore Collection</button>
+          <button class="btn-outline-light" onclick="App.switchView('admin')">Launch Admin Demo</button>
         </div>
-        <div class="flash-box">
-          <span style="font-size:12px;color:#E2E8F0;">Flash Offer Ends In:</span>
-          <span class="flash-timer" id="flashTimer">04:59:59</span>
-        </div>
-      </div>
-      <div class="hero-media">
-        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80" alt="Luxury Watch" onerror="this.style.display='none'" />
-        <div class="hero-badge-card">
-          <div>
-            <div style="font-size:11px;color:var(--gold);text-transform:uppercase;font-weight:700;">Signature Edition</div>
-            <div style="font-size:14px;font-weight:700;">Chronos Obsidian Automatic</div>
-          </div>
-          <div style="font-size:16px;font-weight:800;color:var(--gold);">₹14,999</div>
+        <div class="hero-trust">
+          <div><strong>100%</strong><span>Live Local Sync</span></div>
+          <div><strong>GST</strong><span>Auto Tax Invoices</span></div>
+          <div><strong>POS</strong><span>Offline + Online</span></div>
         </div>
       </div>
+      <div class="hero-showcase-card" id="hero-featured-card"></div>
+    </section>
+
+    <!-- Abandoned Cart Demo Alert (shown when cart has items) -->
+    <div id="abandoned-banner" class="abandoned-banner hidden">
+      <span><strong>Don't forget your items!</strong> Complete your order now and use code <strong>WELCOME10</strong> for instant savings.</span>
+      <button class="btn-dark-sm" onclick="App.openCartDrawer()">Resume Checkout</button>
     </div>
 
-    <!-- Trust Pillars -->
-    <div class="trust-grid">
-      <div class="trust-card">
-        <div class="trust-ico">&#128196;</div>
-        <div><h4>Auto GST Invoices</h4><span>CGST/SGST &amp; IGST Ready</span></div>
-      </div>
-      <div class="trust-card">
-        <div class="trust-ico">&#9889;</div>
-        <div><h4>Live POS Sync</h4><span>Unified Offline + Online Stock</span></div>
-      </div>
-      <div class="trust-card">
-        <div class="trust-ico">&#128274;</div>
-        <div><h4>Indian Checkout</h4><span>UPI, Cards, NetBanking &amp; COD</span></div>
-      </div>
-      <div class="trust-card">
-        <div class="trust-ico">&#128666;</div>
-        <div><h4>Express Delivery</h4><span>Real-Time Order Tracking</span></div>
-      </div>
-    </div>
-
-    <!-- Catalog -->
-    <div id="catalogSection" class="section-head">
-      <div>
-        <h2>Curated Collection</h2>
-        <p id="catalogCountText">Showing premium retail items</p>
-      </div>
-    </div>
-
-    <div class="filter-bar">
-      <div class="cat-pills" id="categoryPills"></div>
-      <select class="sort-select" id="sortSelect" onchange="renderCatalog()">
-        <option value="featured">Sort: Featured</option>
-        <option value="low">Price: Low to High</option>
-        <option value="high">Price: High to Low</option>
-        <option value="discount">Highest Discount</option>
-      </select>
-    </div>
-
-    <div class="product-grid" id="productGrid"></div>
-
-    <!-- Recently Viewed -->
-    <div id="recentlyViewedWrap" class="hidden" style="margin-top:34px;">
+    <!-- Curated Highlights Strip -->
+    <section class="section-wrap">
       <div class="section-head">
         <div>
-          <h2>Recently Viewed</h2>
-          <p>Pick up right where you left off</p>
+          <span class="eyebrow-dark">CURATED EDITS</span>
+          <h2>Trending &amp; Best Sellers</h2>
+        </div>
+        <div class="quick-filter-tabs">
+          <button class="pill-btn active" onclick="App.setShowcaseTab('all', this)">All</button>
+          <button class="pill-btn" onclick="App.setShowcaseTab('bestseller', this)">Best Sellers</button>
+          <button class="pill-btn" onclick="App.setShowcaseTab('new', this)">New Arrivals</button>
+          <button class="pill-btn" onclick="App.setShowcaseTab('flash', this)">Flash Deals</button>
         </div>
       </div>
-      <div class="product-grid" id="recentlyViewedGrid"></div>
-    </div>
+      <div id="featured-grid" class="product-grid"></div>
+    </section>
 
-    <!-- Testimonials -->
-    <div class="section-head" style="margin-top:42px;">
-      <div>
-        <h2>Trusted by Shoppers &amp; Retail Brands</h2>
-        <p>Verified customer feedback across India</p>
+    <!-- Editorial Split Promo Banner -->
+    <section class="section-wrap">
+      <div class="promo-split">
+        <div class="promo-box dark">
+          <span class="eyebrow">OMNICHANNEL RETAIL</span>
+          <h3>Run Your Store &amp; Physical Counter Together</h3>
+          <p>Test our Retail POS to scan SKUs, print 80mm bills, and watch online stock update automatically.</p>
+          <button class="btn-gold" onclick="App.switchView('pos')">Try Retail POS</button>
+        </div>
+        <div class="promo-box cream">
+          <span class="eyebrow-dark">INDIAN TAX READY</span>
+          <h3>Automated CGST / SGST &amp; IGST Billing</h3>
+          <p>Every order generates a print-ready A4 GST invoice with HSN codes, tax splits, and order tracking.</p>
+          <button class="btn-dark" onclick="App.switchView('invoices')">View GST Invoices</button>
+        </div>
       </div>
-    </div>
-    <div class="testi-grid">
-      <div class="testi-card">
-        <div class="stars" style="margin-bottom:8px;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <p style="font-size:13px;color:var(--text);margin-bottom:10px;">"The checkout flow and instant GST invoice download feel like a flagship global brand. Delivered to Guwahati in 2 days."</p>
-        <strong style="font-size:13px;">Aarav Sharma</strong> <span style="font-size:12px;color:var(--muted);">• Verified Buyer</span>
+    </section>
+
+    <!-- Full Filterable Catalogue -->
+    <section class="section-wrap" id="catalog-section">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow-dark">COMPLETE CATALOGUE</span>
+          <h2>Shop by Category</h2>
+        </div>
+        <div class="catalog-controls">
+          <select id="sort-select" class="input-field sm" onchange="App.renderCatalog()">
+            <option value="featured">Sort: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="discount">Biggest Discount</option>
+            <option value="rating">Top Rated</option>
+          </select>
+          <label class="checkbox-inline">
+            <input type="checkbox" id="instock-only" onchange="App.renderCatalog()" />
+            <span>In Stock Only</span>
+          </label>
+        </div>
       </div>
-      <div class="testi-card">
-        <div class="stars" style="margin-bottom:8px;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <p style="font-size:13px;color:var(--text);margin-bottom:10px;">"Using the Retail POS on my Android tablet while online orders update the same stock automatically saved us hours every day."</p>
-        <strong style="font-size:13px;">Priya Nair</strong> <span style="font-size:12px;color:var(--muted);">• Boutique Owner</span>
+
+      <div id="category-pills" class="category-pills"></div>
+      <div id="catalog-grid" class="product-grid"></div>
+    </section>
+
+    <!-- Recently Viewed -->
+    <section class="section-wrap hidden" id="recently-viewed-section">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow-dark">YOUR HISTORY</span>
+          <h2>Recently Viewed</h2>
+        </div>
       </div>
-      <div class="testi-card">
-        <div class="stars" style="margin-bottom:8px;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <p style="font-size:13px;color:var(--text);margin-bottom:10px;">"Packaging, product quality, and WhatsApp order support are genuinely top-tier. Already ordered twice this month."</p>
-        <strong style="font-size:13px;">Rohan Mehta</strong> <span style="font-size:12px;color:var(--muted);">• Verified Buyer</span>
+      <div id="recently-viewed-grid" class="product-grid compact"></div>
+    </section>
+
+    <!-- Brand Values & Testimonials -->
+    <section class="section-wrap">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow-dark">CLIENT EXPERIENCES</span>
+          <h2>Trusted by Modern Shoppers</h2>
+        </div>
       </div>
-    </div>
+      <div class="testimonial-grid">
+        <article class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p>"The checkout speed and automatic GST invoice download feel like a flagship luxury brand. Zero friction on mobile."</p>
+          <div class="t-author"><strong>Rohan Deshmukh</strong><span>Mumbai · Verified Buyer</span></div>
+        </article>
+        <article class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p>"We tested the POS counter alongside online orders—stock deducted immediately across both screens. Incredible demo."</p>
+          <div class="t-author"><strong>Ananya Sen</strong><span>Guwahati · Boutique Owner</span></div>
+        </article>
+        <article class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p>"Clean typography, crisp product gallery zoom, and direct WhatsApp order enquiry. Everything a retail business needs."</p>
+          <div class="t-author"><strong>Vikramaditya Nair</strong><span>Bengaluru · Tech Enthusiast</span></div>
+        </article>
+      </div>
+    </section>
 
     <!-- Newsletter -->
-    <div class="newsletter-box">
-      <div>
-        <h3 style="font-size:22px;margin-bottom:4px;">Join the AURELIA Private Club</h3>
-        <p style="font-size:13px;color:#CBD5E1;">Get early access to limited drops and exclusive ₹500 member vouchers.</p>
+    <section class="section-wrap">
+      <div class="newsletter-box">
+        <div>
+          <span class="eyebrow">PRIVATE CLIENT LIST</span>
+          <h3>Receive Early Access &amp; Exclusive Drops</h3>
+          <p>Join our dispatch list for private sales and new collection previews.</p>
+        </div>
+        <form class="newsletter-form" onsubmit="App.subscribeNewsletter(event)">
+          <input type="email" id="newsletter-email" required placeholder="Enter your email address" />
+          <button type="submit" class="btn-gold">Subscribe</button>
+        </form>
       </div>
-      <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-        <input type="email" id="newsEmail" placeholder="Enter your email address" required />
-        <button type="submit" class="btn btn-gold">Subscribe</button>
-      </form>
-    </div>
+    </section>
   </main>
 
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <div class="brand-logo" style="margin-bottom:12px;">
-            <div class="brand-mark" style="background:var(--gold);color:var(--charcoal);">A</div>
+  <!-- ==================== VIEW 2: ADMIN DASHBOARD ==================== -->
+  <section id="view-admin" class="app-view">
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="admin-brand">
+          <span class="eyebrow">MANAGEMENT CONSOLE</span>
+          <h3>AURELIA Admin</h3>
+        </div>
+        <nav class="admin-nav">
+          <button class="admin-nav-btn active" data-tab="overview" onclick="App.switchAdminTab('overview')">📊 Overview</button>
+          <button class="admin-nav-btn" data-tab="products" onclick="App.switchAdminTab('products')">📦 Products &amp; Stock</button>
+          <button class="admin-nav-btn" data-tab="orders" onclick="App.switchAdminTab('orders')">🧾 Orders Pipeline</button>
+          <button class="admin-nav-btn" data-tab="customers" onclick="App.switchAdminTab('customers')">👥 Customers</button>
+          <button class="admin-nav-btn" data-tab="coupons" onclick="App.switchAdminTab('coupons')">🏷 Coupons &amp; Promos</button>
+          <button class="admin-nav-btn" data-tab="reports" onclick="App.switchAdminTab('reports')">📈 Reports &amp; Settings</button>
+        </nav>
+      </aside>
+
+      <div class="admin-content">
+        <!-- Admin Overview -->
+        <div id="admin-tab-overview" class="admin-tab active">
+          <div class="panel-header">
             <div>
-              <div class="brand-name" style="color:#fff;">AURELIA</div>
-              <div class="brand-sub" style="color:#94A3B8;">Retail Pvt. Ltd.</div>
+              <h2>Dashboard Overview</h2>
+              <p class="muted">Real-time metrics synced with Storefront &amp; Retail POS</p>
+            </div>
+            <button class="btn-gold" onclick="App.openProductModal()">+ Add Product</button>
+          </div>
+
+          <div id="admin-kpi-grid" class="kpi-grid"></div>
+
+          <div class="admin-two-col">
+            <div class="card-panel">
+              <div class="card-panel-head">
+                <h3>Revenue by Category (₹)</h3>
+                <span class="muted-sm">Live Calculated</span>
+              </div>
+              <div id="admin-revenue-chart" class="bar-chart-wrap"></div>
+            </div>
+
+            <div class="card-panel">
+              <div class="card-panel-head">
+                <h3>Low Stock Alerts (&le; 5 units)</h3>
+                <span class="muted-sm">Auto Tracked</span>
+              </div>
+              <div id="admin-low-stock"></div>
             </div>
           </div>
-          <p style="font-size:13px;color:#94A3B8;max-width:290px;">GSTIN: 18AABCA9281K1Z5<br/>GS Road, Guwahati, Assam 781005<br/>Demo Commerce Architecture Ready for Production Scaling.</p>
+
+          <div class="card-panel">
+            <div class="card-panel-head">
+              <h3>Recent Transactions</h3>
+              <button class="btn-ghost-dark" onclick="App.switchAdminTab('orders')">Manage All Orders →</button>
+            </div>
+            <div class="table-wrap" id="admin-recent-orders"></div>
+          </div>
         </div>
-        <div>
-          <h4>Platform Modules</h4>
-          <ul>
-            <li><a href="javascript:void(0)" onclick="switchView('storefront')">Customer Storefront</a></li>
-            <li><a href="javascript:void(0)" onclick="switchView('admin')">Admin Dashboard</a></li>
-            <li><a href="javascript:void(0)" onclick="switchView('pos')">Offline Retail POS</a></li>
-            <li><a href="javascript:void(0)" onclick="switchView('invoices')">Indian GST Billing</a></li>
-          </ul>
+
+        <!-- Admin Products -->
+        <div id="admin-tab-products" class="admin-tab">
+          <div class="panel-header">
+            <div>
+              <h2>Product &amp; Inventory Management</h2>
+              <p class="muted">Add, edit, delete products, upload photos, and adjust stock instantly</p>
+            </div>
+            <button class="btn-gold" onclick="App.openProductModal()">+ Add New Product</button>
+          </div>
+          <div class="toolbar-row">
+            <input type="search" id="admin-prod-search" class="input-field" placeholder="Filter by name, SKU, or category..." oninput="App.renderAdminProducts()" />
+          </div>
+          <div class="card-panel">
+            <div class="table-wrap" id="admin-products-table"></div>
+          </div>
         </div>
-        <div>
-          <h4>Customer Care</h4>
-          <ul>
-            <li><a href="javascript:void(0)" onclick="openAccountModal('orders')">Track Your Order</a></li>
-            <li><a href="javascript:void(0)" onclick="openAccountModal('wishlist')">Saved Wishlist</a></li>
-            <li><a href="javascript:void(0)" onclick="openWhatsApp('Hello! I have a product enquiry from AURELIA store.')">WhatsApp Concierge</a></li>
-          </ul>
+
+        <!-- Admin Orders -->
+        <div id="admin-tab-orders" class="admin-tab">
+          <div class="panel-header">
+            <div>
+              <h2>Order Management</h2>
+              <p class="muted">Update statuses, manage tracking, process demo refunds, and print GST bills</p>
+            </div>
+            <select id="admin-order-filter" class="input-field sm" onchange="App.renderAdminOrders()">
+              <option value="all">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+              <option value="Refunded">Refunded</option>
+            </select>
+          </div>
+          <div class="card-panel">
+            <div class="table-wrap" id="admin-orders-table"></div>
+          </div>
         </div>
-        <div>
-          <h4>Payment Readiness</h4>
-          <ul>
-            <li>UPI / QR Instant Pay</li>
-            <li>Razorpay Gateway Ready</li>
-            <li>Debit / Credit Cards</li>
-            <li>Cash on Delivery (COD)</li>
-          </ul>
+
+        <!-- Admin Customers -->
+        <div id="admin-tab-customers" class="admin-tab">
+          <div class="panel-header">
+            <div>
+              <h2>Customer Directory</h2>
+              <p class="muted">Registered profiles, order frequency, and lifetime spending</p>
+            </div>
+          </div>
+          <div class="card-panel">
+            <div class="table-wrap" id="admin-customers-table"></div>
+          </div>
+        </div>
+
+        <!-- Admin Coupons -->
+        <div id="admin-tab-coupons" class="admin-tab">
+          <div class="panel-header">
+            <div>
+              <h2>Discounts &amp; Promo Codes</h2>
+              <p class="muted">Create coupon codes that work immediately in Storefront Checkout &amp; POS</p>
+            </div>
+          </div>
+
+          <div class="card-panel">
+            <h3 style="margin-bottom:12px;">Create New Coupon</h3>
+            <form class="form-grid-4" onsubmit="App.createCoupon(event)">
+              <div class="field">
+                <label>Coupon Code</label>
+                <input type="text" id="cp-code" required placeholder="e.g. FESTIVE15" />
+              </div>
+              <div class="field">
+                <label>Discount Type</label>
+                <select id="cp-type">
+                  <option value="percent">Percentage (%)</option>
+                  <option value="fixed">Fixed Amount (₹)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Value</label>
+                <input type="number" id="cp-value" required min="1" placeholder="15" />
+              </div>
+              <div class="field">
+                <label>Min Purchase (₹)</label>
+                <input type="number" id="cp-min" required min="0" value="1000" />
+              </div>
+              <div class="field full-span">
+                <button type="submit" class="btn-gold">Save Coupon Code</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card-panel">
+            <div class="table-wrap" id="admin-coupons-table"></div>
+          </div>
+        </div>
+
+        <!-- Admin Reports & Store Settings -->
+        <div id="admin-tab-reports" class="admin-tab">
+          <div class="panel-header">
+            <div>
+              <h2>Analytics Reports &amp; GST Settings</h2>
+              <p class="muted">Export sales data and configure your Indian business invoice details</p>
+            </div>
+            <button class="btn-dark" onclick="App.exportOrdersCSV()">⬇ Export Sales CSV</button>
+          </div>
+
+          <div class="admin-two-col">
+            <div class="card-panel">
+              <h3>Top Performing Products</h3>
+              <div id="admin-top-products" style="margin-top:12px;"></div>
+            </div>
+
+            <div class="card-panel">
+              <h3>Business &amp; GST Configuration</h3>
+              <form class="stack-form" style="margin-top:12px;" onsubmit="App.saveStoreSettings(event)">
+                <div class="field">
+                  <label>Legal Store Name</label>
+                  <input type="text" id="set-store-name" required />
+                </div>
+                <div class="field">
+                  <label>GSTIN Number</label>
+                  <input type="text" id="set-gstin" required />
+                </div>
+                <div class="field">
+                  <label>Home State (For CGST/SGST vs IGST)</label>
+                  <select id="set-state">
+                    <option value="Assam">Assam (18)</option>
+                    <option value="Maharashtra">Maharashtra (27)</option>
+                    <option value="Delhi">Delhi (07)</option>
+                    <option value="Karnataka">Karnataka (29)</option>
+                    <option value="West Bengal">West Bengal (19)</option>
+                    <option value="Tamil Nadu">Tamil Nadu (33)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Store Address &amp; Phone</label>
+                  <input type="text" id="set-address" required />
+                </div>
+                <div class="field">
+                  <label>WhatsApp Business Number (with country code)</label>
+                  <input type="text" id="set-whatsapp" required />
+                </div>
+                <button type="submit" class="btn-gold">Update Business Details</button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div class="footer-bottom">
-        <span>&copy; 2026 AURELIA Retail Private Limited. All rights reserved.</span>
-        <span class="crafted-credit">&#10022; Crafted by Shahalam Laskar</span>
-      </div>
     </div>
-  </footer>
-</section>
+  </section>
 
-<!-- ================= ADMIN DASHBOARD VIEW ================= -->
-<section id="view-admin" class="hidden">
-  <div class="container panel-wrap">
-    <div class="section-head" style="margin-top:0;">
-      <div>
-        <h2>Executive Admin Dashboard</h2>
-        <p>Live metrics synchronized with Storefront &amp; Retail POS</p>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn btn-gold btn-sm" onclick="openProductForm()">+ Add Product</button>
-        <button class="btn btn-outline btn-sm" onclick="exportOrdersCSV()">Export CSV Report</button>
-      </div>
+  <!-- ==================== VIEW 3: RETAIL POS ==================== -->
+  <section id="view-pos" class="app-view">
+    <div class="pos-mobile-switch">
+      <button class="pos-m-btn active" id="pos-m-catalog" onclick="App.setPosMobilePane('catalog')">Products</button>
+      <button class="pos-m-btn" id="pos-m-cart" onclick="App.setPosMobilePane('cart')">Current Bill (<span id="pos-m-count">0</span>)</button>
     </div>
 
-    <div class="kpi-grid" id="adminKpis"></div>
-
-    <div class="sub-tabs" id="adminTabs">
-      <button class="sub-tab active" onclick="switchAdminTab('overview', this)">Overview &amp; Analytics</button>
-      <button class="sub-tab" onclick="switchAdminTab('products', this)">Products &amp; Inventory</button>
-      <button class="sub-tab" onclick="switchAdminTab('orders', this)">Orders &amp; Status</button>
-      <button class="sub-tab" onclick="switchAdminTab('coupons', this)">Coupons &amp; Promos</button>
-      <button class="sub-tab" onclick="switchAdminTab('customers', this)">Customers</button>
-    </div>
-
-    <div id="adminTabContent"></div>
-
-    <div style="text-align:center;margin-top:26px;">
-      <span class="crafted-credit">&#10022; Crafted by Shahalam Laskar</span>
-    </div>
-  </div>
-</section>
-
-<!-- ================= RETAIL POS VIEW ================= -->
-<section id="view-pos" class="hidden">
-  <div class="container panel-wrap">
-    <div class="section-head" style="margin-top:0;">
-      <div>
-        <h2>Retail Point of Sale (POS)</h2>
-        <p>Fast in-store billing with automatic inventory deduction &amp; 80mm thermal receipts</p>
-      </div>
-    </div>
-
-    <div class="pos-mobile-toggle">
-      <button class="btn btn-primary btn-sm" style="flex:1;" id="posMobCatBtn" onclick="togglePosMobile('catalog')">Catalog</button>
-      <button class="btn btn-outline btn-sm" style="flex:1;" id="posMobBillBtn" onclick="togglePosMobile('bill')">Current Bill (<span id="posMobCount">0</span>)</button>
-    </div>
-
-    <div class="pos-grid">
-      <!-- Left: POS Catalog -->
-      <div class="card" id="posLeftPanel">
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <input type="text" id="posSearch" placeholder="Scan SKU (e.g. AUR-101) or search name..." oninput="renderPosCatalog()" onkeydown="if(event.key==='Enter') scanPosSku()" style="flex:1;min-width:180px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;" />
-          <button class="btn btn-primary btn-sm" onclick="scanPosSku()">Scan / Add</button>
+    <div class="pos-layout">
+      <!-- Left: POS Catalog & Scanner -->
+      <div class="pos-left active" id="pos-pane-catalog">
+        <div class="pos-topbar">
+          <form class="pos-scan-form" onsubmit="App.posScanSubmit(event)">
+            <input type="text" id="pos-scan-input" placeholder="Scan / Type SKU (e.g. AUR-101) or search product..." oninput="App.renderPosProducts()" />
+            <button type="submit" class="btn-dark">Add SKU</button>
+          </form>
+          <div id="pos-cat-pills" class="category-pills compact"></div>
         </div>
-        <div class="pos-catalog" id="posCatalogGrid"></div>
+        <div id="pos-product-grid" class="pos-grid"></div>
       </div>
 
       <!-- Right: POS Billing Cart -->
-      <div class="card pos-panel-hide-mob" id="posRightPanel">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <h3 style="font-size:18px;">POS Billing Cart</h3>
-          <button class="btn btn-danger btn-sm" onclick="clearPosCart()">Clear</button>
+      <div class="pos-right" id="pos-pane-cart">
+        <div class="pos-bill-head">
+          <h3>POS Counter Bill</h3>
+          <button class="btn-ghost-dark" onclick="App.clearPosCart()">Clear</button>
         </div>
 
-        <div class="form-grid" style="margin-bottom:10px;">
-          <div class="field"><label>Customer Name</label><input type="text" id="posCustName" value="Walk-in Customer" /></div>
-          <div class="field"><label>Phone (Optional)</label><input type="tel" id="posCustPhone" placeholder="9876543210" /></div>
+        <div class="pos-customer-row">
+          <input type="text" id="pos-cust-name" class="input-field sm" placeholder="Customer Name (Walk-in)" />
+          <input type="tel" id="pos-cust-phone" class="input-field sm" placeholder="Mobile No." />
         </div>
 
-        <div id="posCartItems" style="max-height:240px;overflow-y:auto;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8px 0;margin-bottom:12px;"></div>
+        <div id="pos-cart-items" class="pos-cart-list"></div>
 
-        <div class="form-grid">
+        <div class="pos-bill-footer">
+          <div class="pos-discount-row">
+            <label>Bill Discount (%)</label>
+            <input type="number" id="pos-discount-pct" min="0" max="50" value="0" oninput="App.renderPosCart()" />
+          </div>
+
+          <div class="pos-totals" id="pos-totals-box"></div>
+
+          <div class="pos-pay-methods">
+            <button type="button" class="pay-chip active" data-method="Cash" onclick="App.setPosPayment('Cash', this)">💵 Cash</button>
+            <button type="button" class="pay-chip" data-method="UPI" onclick="App.setPosPayment('UPI', this)">📱 UPI</button>
+            <button type="button" class="pay-chip" data-method="Card" onclick="App.setPosPayment('Card', this)">💳 Card</button>
+          </div>
+
+          <div id="pos-cash-box" class="pos-cash-box">
+            <input type="number" id="pos-cash-received" class="input-field sm" placeholder="Cash Received (₹)" oninput="App.updatePosChange()" />
+            <span id="pos-change-due">Change: ₹0</span>
+          </div>
+
+          <button class="btn-gold full-width" onclick="App.completePosSale()">Complete Sale &amp; Generate Receipt</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== VIEW 4: GST INVOICES ==================== -->
+  <section id="view-invoices" class="app-view">
+    <div class="section-wrap">
+      <div class="panel-header">
+        <div>
+          <span class="eyebrow-dark">COMMERCIAL BILLING</span>
+          <h2>Indian GST Invoices &amp; Billing History</h2>
+        </div>
+        <input type="search" id="invoice-search" class="input-field sm" placeholder="Search Invoice # or Customer..." oninput="App.renderInvoicesView()" />
+      </div>
+      <div class="card-panel">
+        <div class="table-wrap" id="invoices-table-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SITE FOOTER ==================== -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div>
+        <div class="brand-name light">AURELIA</div>
+        <p class="footer-desc">Commercial-grade multi-purpose eCommerce platform showcasing Storefront, Admin Console, Retail POS, and Indian GST Invoicing.</p>
+      </div>
+      <div>
+        <h4>Platform Modules</h4>
+        <ul>
+          <li><a href="#" onclick="App.switchView('storefront');return false;">Customer Storefront</a></li>
+          <li><a href="#" onclick="App.switchView('admin');return false;">Admin Dashboard</a></li>
+          <li><a href="#" onclick="App.switchView('pos');return false;">Retail POS Counter</a></li>
+          <li><a href="#" onclick="App.switchView('invoices');return false;">GST Tax Invoices</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Indian Payments (Demo)</h4>
+        <ul>
+          <li>UPI / QR Ready</li>
+          <li>Razorpay Architecture</li>
+          <li>Credit / Debit Cards</li>
+          <li>Cash on Delivery (COD)</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Client Concierge</h4>
+        <p class="footer-desc">Want a custom eCommerce &amp; POS platform like this for your retail store or brand?</p>
+        <button class="btn-whatsapp-sm" onclick="App.openWhatsAppGeneral()">💬 Chat on WhatsApp</button>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 AURELIA Retail Private Limited. Demo Showcase Mode — No real payments processed.</span>
+      <span class="developer-credit">Crafted by <strong>Shahalam Laskar</strong></span>
+    </div>
+  </footer>
+
+  <!-- Mobile Bottom Navigation (Android Optimized) -->
+  <nav class="mobile-bottom-nav" aria-label="Mobile Navigation">
+    <button class="mbn-item active" data-view="storefront" onclick="App.switchView('storefront')">
+      <span>🏠</span><small>Shop</small>
+    </button>
+    <button class="mbn-item" data-view="admin" onclick="App.switchView('admin')">
+      <span>📊</span><small>Admin</small>
+    </button>
+    <button class="mbn-item" data-view="pos" onclick="App.switchView('pos')">
+      <span>🧾</span><small>POS</small>
+    </button>
+    <button class="mbn-item" data-view="invoices" onclick="App.switchView('invoices')">
+      <span>📄</span><small>Bills</small>
+    </button>
+    <button class="mbn-item" onclick="App.openCartDrawer()">
+      <span>🛍</span><small>Bag (<b id="mbn-cart-count">0</b>)</small>
+    </button>
+  </nav>
+
+  <!-- Floating WhatsApp Button -->
+  <button class="whatsapp-fab" onclick="App.openWhatsAppGeneral()" title="WhatsApp Concierge">💬</button>
+
+  <!-- ==================== SLIDE-OVER CART DRAWER ==================== -->
+  <div id="drawer-cart" class="drawer-overlay hidden" onclick="if(event.target===this) App.closeDrawers()">
+    <div class="drawer-panel">
+      <div class="drawer-head">
+        <h3>Shopping Bag (<span id="drawer-cart-qty">0</span>)</h3>
+        <button class="close-btn" onclick="App.closeDrawers()">✕</button>
+      </div>
+      <div id="cart-items-container" class="drawer-body"></div>
+      <div class="drawer-foot">
+        <form class="coupon-bar" onsubmit="App.applyCartCoupon(event)">
+          <input type="text" id="cart-coupon-input" placeholder="Promo code (WELCOME10)" />
+          <button type="submit" class="btn-dark-sm">Apply</button>
+        </form>
+        <div id="cart-coupon-status" class="coupon-status"></div>
+        <div id="cart-summary-lines" class="summary-lines"></div>
+        <button class="btn-gold full-width" id="btn-proceed-checkout" onclick="App.openCheckoutModal()">Proceed to Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE-OVER WISHLIST DRAWER ==================== -->
+  <div id="drawer-wishlist" class="drawer-overlay hidden" onclick="if(event.target===this) App.closeDrawers()">
+    <div class="drawer-panel">
+      <div class="drawer-head">
+        <h3>Saved Wishlist</h3>
+        <button class="close-btn" onclick="App.closeDrawers()">✕</button>
+      </div>
+      <div id="wishlist-items-container" class="drawer-body"></div>
+    </div>
+  </div>
+
+  <!-- ==================== PRODUCT DETAIL MODAL ==================== -->
+  <div id="modal-product" class="modal-overlay hidden" onclick="if(event.target===this) App.closeModals()">
+    <div class="modal-box modal-xl">
+      <button class="modal-close-float" onclick="App.closeModals()">✕</button>
+      <div id="product-detail-content"></div>
+    </div>
+  </div>
+
+  <!-- ==================== 3-STEP CHECKOUT MODAL ==================== -->
+  <div id="modal-checkout" class="modal-overlay hidden" onclick="if(event.target===this) App.closeModals()">
+    <div class="modal-box modal-lg">
+      <div class="modal-head">
+        <h3>Secure Checkout</h3>
+        <button class="close-btn" onclick="App.closeModals()">✕</button>
+      </div>
+      <div class="checkout-steps">
+        <span class="step-pill active" id="chk-step-1">1. Address</span>
+        <span class="step-pill" id="chk-step-2">2. Payment (Demo)</span>
+        <span class="step-pill" id="chk-step-3">3. Confirmation</span>
+      </div>
+      <div id="checkout-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ==================== CUSTOMER ACCOUNT / AUTH MODAL ==================== -->
+  <div id="modal-auth" class="modal-overlay hidden" onclick="if(event.target===this) App.closeModals()">
+    <div class="modal-box modal-md">
+      <div class="modal-head">
+        <h3 id="auth-modal-title">Customer Account</h3>
+        <button class="close-btn" onclick="App.closeModals()">✕</button>
+      </div>
+      <div id="auth-modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN ADD / EDIT PRODUCT MODAL ==================== -->
+  <div id="modal-product-form" class="modal-overlay hidden" onclick="if(event.target===this) App.closeModals()">
+    <div class="modal-box modal-lg">
+      <div class="modal-head">
+        <h3 id="prod-form-title">Add New Product</h3>
+        <button class="close-btn" onclick="App.closeModals()">✕</button>
+      </div>
+      <form id="product-crud-form" class="modal-body stack-form" onsubmit="App.saveProduct(event)">
+        <input type="hidden" id="pf-id" />
+        <div class="form-grid-2">
           <div class="field">
-            <label>Flat Discount (₹)</label>
-            <input type="number" id="posDiscount" value="0" min="0" oninput="renderPosCart()" />
+            <label>Product Name *</label>
+            <input type="text" id="pf-name" required placeholder="e.g. Aurelia Chronograph Watch" />
           </div>
           <div class="field">
-            <label>Payment Mode</label>
-            <select id="posPayMode" onchange="renderPosCart()">
-              <option value="UPI">UPI / QR</option>
-              <option value="Cash">Cash</option>
-              <option value="Card">Debit / Credit Card</option>
+            <label>SKU Code *</label>
+            <input type="text" id="pf-sku" required placeholder="e.g. AUR-115" />
+          </div>
+          <div class="field">
+            <label>Category *</label>
+            <select id="pf-category" required>
+              <option value="Watches">Watches</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Fashion">Fashion</option>
+              <option value="Accessories">Accessories</option>
+              <option value="Home & Lifestyle">Home &amp; Lifestyle</option>
             </select>
           </div>
+          <div class="field">
+            <label>HSN Code *</label>
+            <input type="text" id="pf-hsn" required value="9102" />
+          </div>
+          <div class="field">
+            <label>Selling Price (₹) *</label>
+            <input type="number" id="pf-price" required min="1" />
+          </div>
+          <div class="field">
+            <label>MRP / Original Price (₹) *</label>
+            <input type="number" id="pf-mrp" required min="1" />
+          </div>
+          <div class="field">
+            <label>Stock Quantity *</label>
+            <input type="number" id="pf-stock" required min="0" value="15" />
+          </div>
+          <div class="field">
+            <label>GST Rate (%) *</label>
+            <select id="pf-gst">
+              <option value="5">5%</option>
+              <option value="12">12%</option>
+              <option value="18" selected>18%</option>
+              <option value="28">28%</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Available Colors (comma separated)</label>
+            <input type="text" id="pf-colors" placeholder="Obsidian, Champagne, Silver" />
+          </div>
+          <div class="field">
+            <label>Available Sizes (comma separated)</label>
+            <input type="text" id="pf-sizes" placeholder="Standard or S, M, L, XL" />
+          </div>
         </div>
 
-        <div class="field" id="posCashWrap" style="display:none;">
-          <label>Cash Received (₹)</label>
-          <input type="number" id="posCashTendered" placeholder="Enter cash received" oninput="renderPosCart()" />
-        </div>
-
-        <div id="posSummary" style="background:var(--bg);padding:12px;border-radius:10px;font-size:13px;margin-bottom:12px;"></div>
-
-        <button class="btn btn-gold btn-full" onclick="completePosSale()">Complete Sale &amp; Generate Receipt</button>
-      </div>
-    </div>
-
-    <div style="text-align:center;margin-top:20px;">
-      <span class="crafted-credit">&#10022; Crafted by Shahalam Laskar</span>
-    </div>
-  </div>
-</section>
-
-<!-- ================= GST INVOICES VIEW ================= -->
-<section id="view-invoices" class="hidden">
-  <div class="container panel-wrap">
-    <div class="section-head" style="margin-top:0;">
-      <div>
-        <h2>GST Tax Invoices &amp; Billing History</h2>
-        <p>Printable Indian A4 Tax Invoices (CGST/SGST &amp; IGST) and 80mm POS Receipts</p>
-      </div>
-      <input type="text" id="invSearch" placeholder="Search Invoice # or Customer..." oninput="renderInvoicesList()" style="padding:10px 14px;border:1px solid var(--border);border-radius:10px;min-width:220px;" />
-    </div>
-
-    <div class="card">
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Invoice No</th>
-              <th>Date</th>
-              <th>Customer</th>
-              <th>Channel</th>
-              <th>GST Type</th>
-              <th>Total (₹)</th>
-              <th>Payment</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="invoicesTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div style="text-align:center;margin-top:20px;">
-      <span class="crafted-credit">&#10022; Crafted by Shahalam Laskar</span>
-    </div>
-  </div>
-</section>
-
-<!-- ================= FLOATING WHATSAPP ================= -->
-<a href="javascript:void(0)" class="wa-float" onclick="openWhatsApp('Hi AURELIA! I saw your premium eCommerce showcase and would like to enquire.')">
-  &#128172; WhatsApp
-</a>
-
-<!-- ================= MOBILE BOTTOM NAV (ANDROID) ================= -->
-<nav class="mobile-nav">
-  <button class="mob-nav-btn active" data-mob="storefront" onclick="switchView('storefront')"><span class="ico">&#127978;</span>Shop</button>
-  <button class="mob-nav-btn" data-mob="pos" onclick="switchView('pos')"><span class="ico">&#128179;</span>POS</button>
-  <button class="mob-nav-btn" data-mob="admin" onclick="switchView('admin')"><span class="ico">&#128202;</span>Admin</button>
-  <button class="mob-nav-btn" data-mob="invoices" onclick="switchView('invoices')"><span class="ico">&#128196;</span>GST</button>
-  <button class="mob-nav-btn" onclick="openCart()"><span class="ico">&#128717;</span>Bag (<span id="mobCartCount">0</span>)</button>
-</nav>
-
-<!-- ================= CART DRAWER ================= -->
-<div class="drawer-overlay" id="cartDrawer" onclick="if(event.target===this) closeCart()">
-  <div class="drawer-panel">
-    <div class="drawer-head">
-      <h3 style="font-size:18px;">Shopping Bag (<span id="drawerCount">0</span>)</h3>
-      <button class="close-x" onclick="closeCart()">&times;</button>
-    </div>
-    <div class="drawer-body" id="cartDrawerBody"></div>
-    <div class="drawer-foot">
-      <div style="display:flex;gap:8px;margin-bottom:12px;">
-        <input type="text" id="couponInput" placeholder="Coupon (WELCOME10)" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:#fff;" />
-        <button class="btn btn-primary btn-sm" onclick="applyCartCoupon()">Apply</button>
-      </div>
-      <div id="cartTotals" style="font-size:13px;margin-bottom:12px;"></div>
-      <button class="btn btn-gold btn-full" onclick="openCheckout()">Proceed to Checkout</button>
-    </div>
-  </div>
-</div>
-
-<!-- ================= PRODUCT DETAIL MODAL ================= -->
-<div class="overlay" id="productModal" onclick="if(event.target===this) closeModal('productModal')">
-  <div class="modal-box" id="productModalBody"></div>
-</div>
-
-<!-- ================= CHECKOUT MODAL ================= -->
-<div class="overlay" id="checkoutModal" onclick="if(event.target===this) closeModal('checkoutModal')">
-  <div class="modal-box" id="checkoutModalBody"></div>
-</div>
-
-<!-- ================= ACCOUNT MODAL ================= -->
-<div class="overlay" id="accountModal" onclick="if(event.target===this) closeModal('accountModal')">
-  <div class="modal-box" id="accountModalBody"></div>
-</div>
-
-<!-- ================= ADMIN PRODUCT FORM MODAL ================= -->
-<div class="overlay" id="adminProdModal" onclick="if(event.target===this) closeModal('adminProdModal')">
-  <div class="modal-box" style="max-width:580px;">
-    <div class="modal-head">
-      <h3 id="prodFormTitle">Add New Product</h3>
-      <button class="close-x" onclick="closeModal('adminProdModal')">&times;</button>
-    </div>
-    <form onsubmit="saveProductForm(event)">
-      <input type="hidden" id="editProdId" />
-      <div class="form-grid">
-        <div class="field full"><label>Product Name</label><input type="text" id="pfName" required /></div>
-        <div class="field"><label>SKU Code</label><input type="text" id="pfSku" required /></div>
         <div class="field">
-          <label>Category</label>
-          <select id="pfCategory">
-            <option>Watches</option><option>Electronics</option><option>Fashion</option><option>Accessories</option><option>Home</option>
-          </select>
+          <label>Product Image URL (or Upload Below)</label>
+          <input type="text" id="pf-image" placeholder="https://..." />
         </div>
-        <div class="field"><label>HSN Code</label><input type="text" id="pfHsn" value="9102" required /></div>
         <div class="field">
-          <label>GST Rate (%)</label>
-          <select id="pfGst"><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select>
+          <label>Or Upload Image from Device (Saved Locally)</label>
+          <input type="file" id="pf-image-file" accept="image/*" onchange="App.handleProductImageUpload(this)" />
         </div>
-        <div class="field"><label>Selling Price (₹)</label><input type="number" id="pfPrice" min="1" required /></div>
-        <div class="field"><label>MRP (₹)</label><input type="number" id="pfMrp" min="1" required /></div>
-        <div class="field"><label>Stock Qty</label><input type="number" id="pfStock" min="0" value="15" required /></div>
-        <div class="field full"><label>Image URL</label><input type="url" id="pfImg" placeholder="https://images.unsplash.com/..." required /></div>
-        <div class="field full"><label>Description</label><textarea id="pfDesc" rows="3" required></textarea></div>
-      </div>
-      <button type="submit" class="btn btn-gold btn-full" style="margin-top:8px;">Save Product</button>
-    </form>
-  </div>
-</div>
-
-<!-- ================= INVOICE / RECEIPT MODAL ================= -->
-<div class="overlay" id="invoiceModal" onclick="if(event.target===this) closeModal('invoiceModal')">
-  <div class="modal-box" style="max-width:820px;">
-    <div class="modal-head no-print">
-      <h3 id="invoiceModalTitle">GST Tax Invoice</h3>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <button class="btn btn-gold btn-sm" onclick="window.print()">&#128424; Print / Save PDF</button>
-        <button class="close-x" onclick="closeModal('invoiceModal')">&times;</button>
-      </div>
+        <div class="field">
+          <label>Description *</label>
+          <textarea id="pf-desc" rows="3" required placeholder="Detailed product description..."></textarea>
+        </div>
+        <div class="field">
+          <label>Specifications (one per line: Key: Value)</label>
+          <textarea id="pf-specs" rows="2" placeholder="Material: Sapphire Glass&#10;Warranty: 2 Years"></textarea>
+        </div>
+        <div class="form-actions-end">
+          <button type="button" class="btn-ghost-dark" onclick="App.closeModals()">Cancel</button>
+          <button type="submit" class="btn-gold">Save Product</button>
+        </div>
+      </form>
     </div>
-    <div id="printArea"></div>
   </div>
-</div>
 
-<script>
-const STORAGE_KEY = 'aurelia_commerce_v3';
-const SELLER = {
-  name: 'AURELIA Retail Private Limited',
-  gstin: '18AABCA9281K1Z5',
-  state: 'Assam',
-  stateCode: '18',
-  address: '4th Floor, Aurelia Tower, GS Road, Guwahati, Assam - 781005',
-  phone: '+91 91013 18482',
-  email: 'billing@aureliaretail.in'
-};
+  <!-- ==================== INVOICE / RECEIPT MODAL ==================== -->
+  <div id="modal-invoice" class="modal-overlay hidden" onclick="if(event.target===this) App.closeModals()">
+    <div class="modal-box modal-xl">
+      <div class="modal-head no-print">
+        <div class="invoice-mode-switch">
+          <button class="pill-btn active" id="btn-mode-a4" onclick="App.setInvoiceViewMode('a4')">A4 GST Tax Invoice</button>
+          <button class="pill-btn" id="btn-mode-pos" onclick="App.setInvoiceViewMode('pos')">80mm POS Receipt</button>
+        </div>
+        <div class="modal-head-actions">
+          <button class="btn-gold" onclick="App.printCurrentInvoice()">🖨 Print / Save PDF</button>
+          <button class="close-btn" onclick="App.closeModals()">✕</button>
+        </div>
+      </div>
+      <div id="invoice-render-area" class="modal-body invoice-scroll"></div>
+    </div>
+  </div>
 
-const INDIAN_STATES = [
-  'Assam', 'Delhi', 'Maharashtra', 'Karnataka', 'West Bengal',
-  'Tamil Nadu', 'Gujarat', 'Uttar Pradesh', 'Telangana', 'Rajasthan', 'Kerala'
-];
+  <!-- ==================== ADMIN ORDER DETAIL MODAL ==================== -->
+  <div id="modal-order-detail" class="modal-overlay hidden" onclick="if(event.target===this) App.closeModals()">
+    <div class="modal-box modal-md">
+      <div class="modal-head">
+        <h3>Manage Order</h3>
+        <button class="close-btn" onclick="App.closeModals()">✕</button>
+      </div>
+      <div id="order-detail-body" class="modal-body"></div>
+    </div>
+  </div>
 
-const DEFAULT_PRODUCTS = [
-  {
-    id: 'p1', sku: 'AUR-101', name: 'Chronos Obsidian Automatic Watch', category: 'Watches',
-    hsn: '9102', gst: 18, price: 14999, mrp: 19999, stock: 14, rating: 4.9,
-    colors: ['Obsidian Black', 'Champagne Gold', 'Midnight Blue'], sizes: ['40mm', '42mm'],
-    images: [
-      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=800&q=80'
-    ],
-    desc: 'Sapphire crystal glass, 316L brushed stainless steel case, Japanese automatic movement, and 5ATM water resistance.',
-    reviews: [{ user: 'Aarav S.', rating: 5, text: 'Looks far more expensive than the price tag. Solid clasp.' }]
-  },
-  {
-    id: 'p2', sku: 'AUR-102', name: 'Aether Pro ANC Wireless Headphones', category: 'Electronics',
-    hsn: '8518', gst: 18, price: 8499, mrp: 11999, stock: 22, rating: 4.8,
-    colors: ['Matte Charcoal', 'Warm Sand'], sizes: ['Standard'],
-    images: [
-      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=800&q=80'
-    ],
-    desc: '45dB hybrid active noise cancellation, 50-hour battery life, multipoint Bluetooth 5.3, and plush memory foam earcups.',
-    reviews: [{ user: 'Kabir D.', rating: 5, text: 'Crisp studio vocals and super comfortable on flights.' }]
-  },
-  {
-    id: 'p3', sku: 'AUR-103', name: 'Vanguard Full-Grain Leather Tote', category: 'Fashion',
-    hsn: '4202', gst: 12, price: 6299, mrp: 8999, stock: 9, rating: 4.7,
-    colors: ['Cognac Tan', 'Espresso Black'], sizes: ['15-inch Laptop'],
-    images: [
-      'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=800&q=80'
-    ],
-    desc: 'Hand-stitched vegetable-tanned full-grain leather with padded laptop compartment and antique brass hardware.',
-    reviews: [{ user: 'Meera K.', rating: 5, text: 'Rich leather smell and easily fits my MacBook plus essentials.' }]
-  },
-  {
-    id: 'p4', sku: 'AUR-104', name: 'Solstice Polarized Aviator Eyewear', category: 'Accessories',
-    hsn: '9004', gst: 12, price: 3499, mrp: 4999, stock: 30, rating: 4.6,
-    colors: ['Gold / Green Lens', 'Gunmetal / Smoke'], sizes: ['Medium', 'Large'],
-    images: [
-      'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=800&q=80'
-    ],
-    desc: 'Ultra-lightweight titanium alloy frames paired with UV400 polarized mineral lenses for glare-free clarity.',
-    reviews: [{ user: 'Rohan M.', rating: 5, text: 'Featherlight feel and zero glare while driving.' }]
-  },
-  {
-    id: 'p5', sku: 'AUR-105', name: 'Lumiere Minimalist Brass Desk Lamp', category: 'Home',
-    hsn: '9405', gst: 18, price: 4799, mrp: 6499, stock: 4, rating: 4.8,
-    colors: ['Brushed Brass', 'Matte Black'], sizes: ['Table Size'],
-    images: [
-      'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=800&q=80'
-    ],
-    desc: 'Touch-dimmable warm 3000K architectural LED lamp forged from solid spun aluminum and brushed brass.',
-    reviews: [{ user: 'Ananya B.', rating: 5, text: 'Elevated my entire study desk instantly.' }]
-  },
-  {
-    id: 'p6', sku: 'AUR-106', name: 'Merino Tailored Urban Overshirt', category: 'Fashion',
-    hsn: '6205', gst: 12, price: 4299, mrp: 5999, stock: 18, rating: 4.7,
-    colors: ['Charcoal', 'Olive', 'Sand'], sizes: ['S', 'M', 'L', 'XL'],
-    images: [
-      'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80'
-    ],
-    desc: 'Breathable Italian-milled wool-cotton blend overshirt cut for sharp layering from office to evening.',
-    reviews: []
-  },
-  {
-    id: 'p7', sku: 'AUR-107', name: 'Onyx Smart Mechanical Keyboard', category: 'Electronics',
-    hsn: '8471', gst: 18, price: 7299, mrp: 9499, stock: 11, rating: 4.9,
-    colors: ['Graphite', 'Ivory'], sizes: ['75% Compact'],
-    images: [
-      'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=800&q=80'
-    ],
-    desc: 'CNC aluminum frame, hot-swappable tactile switches
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Dedicated Print Root -->
+  <div id="print-root" class="print-only"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
