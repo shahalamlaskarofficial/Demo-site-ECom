@@ -1,1 +1,1 @@
-# Demo-site-ECom
+# Demo site
