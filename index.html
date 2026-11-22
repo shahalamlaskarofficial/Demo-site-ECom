@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AURELIA — Flagship Retail & Commerce Suite</title>
+  <meta name="description" content="Commercial-grade luxury eCommerce showcase with Storefront, Indian GST Billing, Retail POS, and Admin Analytics." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+  <!-- TOP WORKSPACE SWITCHER (DEMO PRESENTATION BAR) -->
+  <div class="workspace-bar">
+    <div class="container workspace-inner">
+      <div class="workspace-brand">
+        <span class="live-dot"></span>
+        <span>LIVE COMMERCE DEMO</span>
+      </div>
+      <div class="workspace-tabs" role="tablist">
+        <button class="ws-tab active" data-view="storefront">Storefront</button>
+        <button class="ws-tab" data-view="admin">Admin Dashboard</button>
+        <button class="ws-tab" data-view="pos">Retail POS</button>
+        <button class="ws-tab" data-view="invoices">GST Invoices</button>
+      </div>
+      <div class="workspace-actions">
+        <button class="btn-chip" id="btnResetDemo" title="Reset sample data">Reset Demo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANNOUNCEMENT BAR -->
+  <div class="announcement-bar" id="announcementBar">
+    <div class="container announcement-inner">
+      <span>Complimentary Insured Express Shipping across India on orders above ₹4,999 &nbsp;•&nbsp; Use code <strong>WELCOME10</strong></span>
+      <span class="flash-badge">FLASH OFFER ENDS IN <strong id="flashTimer">04:59:59</strong></span>
+    </div>
+  </div>
+
+  <!-- ==================== STOREFRONT VIEW ==================== -->
+  <main id="view-storefront" class="app-view active">
+    <!-- HEADER / NAVBAR -->
+    <header class="site-header">
+      <div class="container nav-inner">
+        <a href="#" class="brand-logo" onclick="switchView('storefront'); return false;">
+          <!-- Custom Geometric SVG Emblem -->
+          <svg width="34" height="34" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <rect x="1.5" y="1.5" width="37" height="37" rx="8" stroke="#C8A26A" stroke-width="1.5"/>
+            <path d="M20 8L30 29H25.2L20 17.6L14.8 29H10L20 8Z" fill="#C8A26A"/>
+            <circle cx="20" cy="26.5" r="2.2" fill="#FAF8F5"/>
+          </svg>
+          <div>
+            <span class="brand-name">AURELIA</span>
+            <span class="brand-tag">ATELIER & LIVING</span>
+          </div>
+        </a>
+
+        <div class="search-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" id="globalSearch" placeholder="Search watches, audio, leather, home decor..." autocomplete="off" />
+        </div>
+
+        <div class="nav-actions">
+          <button class="icon-btn" id="btnOpenAccount" title="Account">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span class="nav-label" id="navUserLabel">Sign In</span>
+          </button>
+          <button class="icon-btn" id="btnOpenWishlist" title="Wishlist">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            <span class="badge-count" id="wishlistCount">0</span>
+          </button>
+          <button class="icon-btn cart-trigger" id="btnOpenCart" title="Shopping Bag">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span class="badge-count gold" id="cartCount">0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- EDITORIAL HERO WITH SVG ARCHITECTURAL GRAPHICS -->
+    <section class="hero-section">
+      <!-- Subtle Architectural SVG Mesh Background -->
+      <svg class="hero-bg-graphic" viewBox="0 0 1440 640" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <radialGradient id="goldGlow" cx="72%" cy="35%" r="48%">
+            <stop offset="0%" stop-color="#C8A26A" stop-opacity="0.22"/>
+            <stop offset="100%" stop-color="#0F1115" stop-opacity="0"/>
+          </radialGradient>
+          <pattern id="archGrid" width="60" height="60" patternUnits="userSpaceOnUse">
+            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#FFFFFF" stroke-opacity="0.04" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect width="1440" height="640" fill="url(#archGrid)"/>
+        <rect width="1440" height="640" fill="url(#goldGlow)"/>
+        <circle cx="1140" cy="280" r="240" stroke="#C8A26A" stroke-opacity="0.16" stroke-width="1" stroke-dasharray="4 8"/>
+        <circle cx="1140" cy="280" r="170" stroke="#C8A26A" stroke-opacity="0.12" stroke-width="1"/>
+      </svg>
+
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">AUTUMN / WINTER COLLECTION 2026</div>
+          <h1>Crafted Objects for <em>Modern</em> Living.</h1>
+          <p>Discover precision timepieces, studio-grade acoustics, Italian leather craft, and architectural home accents—backed by instant GST invoicing and seamless nationwide delivery.</p>
+          <div class="hero-cta">
+            <a href="#catalog" class="btn btn-gold">Explore Collection</a>
+            <button class="btn btn-outline-light" onclick="switchView('pos')">Try Retail POS</button>
+            <button class="btn btn-ghost-light" onclick="switchView('admin')">Admin Analytics →</button>
+          </div>
+          <div class="hero-metrics">
+            <div><strong>4.9★</strong><span>12,400+ Verified Reviews</span></div>
+            <div><strong>100%</strong><span>GST Compliant Billing</span></div>
+            <div><strong>24–48h</strong><span>Express Metro Dispatch</span></div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-image-frame">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=85" alt="Aurelia Chronograph Collection" />
+            <div class="hero-glass-card top-card">
+              <span class="pill-gold">SIGNATURE PIECE</span>
+              <strong>Chronos Obsidian 41mm</strong>
+              <span>₹24,999 <small>22% OFF</small></span>
+            </div>
+            <div class="hero-glass-card bottom-card">
+              <div class="mini-stat-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C8A26A" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div>
+                <strong>2-Year Atelier Warranty</strong>
+                <span>Authenticity Certificate Included</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST & VALUE STRIP -->
+    <section class="usp-strip">
+      <div class="container usp-grid">
+        <div class="usp-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8A26A" stroke-width="1.6"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <div><strong>Insured Pan-India Delivery</strong><span>Live tracking & safe packaging</span></div>
+        </div>
+        <div class="usp-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8A26A" stroke-width="1.6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <div><strong>Auto GST Tax Invoices</strong><span>CGST/SGST & IGST PDF receipts</span></div>
+        </div>
+        <div class="usp-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8A26A" stroke-width="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          <div><strong>UPI, Cards & COD Ready</strong><span>Transparent demo payment gateway</span></div>
+        </div>
+        <div class="usp-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8A26A" stroke-width="1.6"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          <div><strong>14-Day Hassle-Free Returns</strong><span>Instant refund to source</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VISUAL CATEGORY SHOWCASE -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="section-eyebrow">CURATED DEPARTMENTS</span>
+            <h2>Shop by Category</h2>
+          </div>
+          <button class="link-btn" onclick="filterByCategory('All')">View All Products →</button>
+        </div>
+        <div class="category-grid" id="categoryGrid"></div>
+      </div>
+    </section>
+
+    <!-- MAIN PRODUCT CATALOG -->
+    <section class="section section-tinted" id="catalog">
+      <div class="container">
+        <div class="section-head catalog-head">
+          <div>
+            <span class="section-eyebrow">FLAGSHIP COLLECTION</span>
+            <h2 id="catalogHeading">All Curated Products</h2>
+          </div>
+          <div class="catalog-controls">
+            <div class="filter-pills" id="categoryPills"></div>
+            <select id="sortSelect" class="select-input" aria-label="Sort products">
+              <option value="featured">Sort: Featured</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+              <option value="discount">Biggest Savings</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="product-grid" id="productGrid"></div>
+      </div>
+    </section>
+
+    <!-- EDITORIAL PROMO BANNER -->
+    <section class="section">
+      <div class="container">
+        <div class="promo-banner">
+          <svg class="promo-pattern" viewBox="0 0 600 300" fill="none" aria-hidden="true">
+            <circle cx="520" cy="60" r="180" stroke="#C8A26A" stroke-opacity="0.2" stroke-width="1"/>
+            <circle cx="520" cy="60" r="120" stroke="#C8A26A" stroke-opacity="0.15" stroke-width="1"/>
+          </svg>
+          <div class="promo-content">
+            <span class="pill-gold">OMNICHANNEL RETAIL READY</span>
+            <h2>One Platform. Online Store + Physical Shop POS.</h2>
+            <p>Watch live inventory sync across your eCommerce storefront, physical retail counter, GST invoices, and executive analytics dashboard in real time.</p>
+            <div class="promo-btns">
+              <button class="btn btn-gold" onclick="switchView('pos')">Launch Retail POS</button>
+              <button class="btn btn-outline-light" onclick="switchView('invoices')">Inspect GST Invoices</button>
+            </div>
+          </div>
+          <div class="promo-coupon-box">
+            <span>LIMITED CAMPAIGN CODE</span>
+            <strong id="promoCodeCopy">AURELIA500</strong>
+            <small>Flat ₹500 off on orders above ₹4,000</small>
+            <button class="btn btn-dark-sm" onclick="copyCoupon('AURELIA500')">Copy Code</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECENTLY VIEWED -->
+    <section class="section" id="recentlyViewedSection" style="display:none;">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="section-eyebrow">YOUR HISTORY</span>
+            <h2>Recently Viewed</h2>
+          </div>
+        </div>
+        <div class="product-grid compact-grid" id="recentlyViewedGrid"></div>
+      </div>
+    </section>
+
+    <!-- BRAND SHOWCASE & TESTIMONIALS -->
+    <section class="section section-tinted">
+      <div class="container">
+        <div class="brand-strip">
+          <span>FEATURED IN</span>
+          <div class="brand-logos">
+            <span>VOGUE LIVING</span>
+            <span>MONOCLE</span>
+            <span>GQ INDIA</span>
+            <span>ARCHITECTURAL DIGEST</span>
+            <span>WALLPAPER*</span>
+          </div>
+        </div>
+
+        <div class="section-head" style="margin-top:3.5rem;">
+          <div>
+            <span class="section-eyebrow">CLIENT VOICES</span>
+            <h2>Trusted by Discerning Buyers</h2>
+          </div>
+        </div>
+        <div class="testimonial-grid">
+          <article class="testimonial-card">
+            <div class="stars">★★★★★</div>
+            <p>“The build quality of the Chronos Obsidian timepiece rivals Swiss watches twice its price. Arrived in Mumbai within 28 hours with a proper GST tax invoice.”</p>
+            <div class="author"><strong>Rohan Malhotra</strong><span>Verified Buyer • Mumbai</span></div>
+          </article>
+          <article class="testimonial-card">
+            <div class="stars">★★★★★</div>
+            <p>“Ordered the Aether Studio ANC headphones and leather folio for our design studio. Seamless checkout, clean packaging, and super responsive WhatsApp support.”</p>
+            <div class="author"><strong>Ananya Deshmukh</strong><span>Verified Buyer • Bengaluru</span></div>
+          </article>
+          <article class="testimonial-card">
+            <div class="stars">★★★★★</div>
+            <p>“We used AURELIA’s corporate gifting order flow and received consolidated HSN-coded GST invoices immediately. Effortless experience from browsing to delivery.”</p>
+            <div class="author"><strong>Kabir Sharma</strong><span>Verified Buyer • New Delhi</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEWSLETTER & FOOTER -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="newsletter-box">
+          <div>
+            <h3>Join the Private Preview List</h3>
+            <p>Receive early access to limited editions, archive drops, and ₹500 off your first order.</p>
+          </div>
+          <form class="newsletter-form" id="newsletterForm">
+            <input type="email" id="newsletterEmail" placeholder="Enter your email address" required />
+            <button type="submit" class="btn btn-gold">Subscribe</button>
+          </form>
+        </div>
+
+        <div class="footer-grid">
+          <div>
+            <div class="brand-logo footer-brand">
+              <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><rect x="1.5" y="1.5" width="37" height="37" rx="8" stroke="#C8A26A" stroke-width="1.5"/><path d="M20 8L30 29H25.2L20 17.6L14.8 29H10L20 8Z" fill="#C8A26A"/></svg>
+              <span class="brand-name">AURELIA</span>
+            </div>
+            <p class="footer-desc">Flagship luxury retail & omnichannel commerce showcase engineered for modern Indian businesses.</p>
+            <p class="footer-meta">GSTIN: 27AABCA8921K1Z5<br/>Bandra Kurla Complex, Mumbai 400051</p>
+          </div>
+          <div>
+            <h4>Shop</h4>
+            <ul>
+              <li><a href="#catalog" onclick="filterByCategory('Electronics')">Electronics & Audio</a></li>
+              <li><a href="#catalog" onclick="filterByCategory('Watches')">Luxury Timepieces</a></li>
+              <li><a href="#catalog" onclick="filterByCategory('Fashion')">Leather & Fashion</a></li>
+              <li><a href="#catalog" onclick="filterByCategory('Home')">Home & Lifestyle</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Platform Demo</h4>
+            <ul>
+              <li><a href="#" onclick="switchView('admin');return false;">Admin Dashboard</a></li>
+              <li><a href="#" onclick="switchView('pos');return false;">Retail POS Counter</a></li>
+              <li><a href="#" onclick="switchView('invoices');return false;">GST Invoice Center</a></li>
+              <li><a href="#" onclick="openAccountModal();return false;">Customer Account</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Payment Architecture</h4>
+            <div class="payment-badges">
+              <span class="pay-badge">UPI</span>
+              <span class="pay-badge">Razorpay</span>
+              <span class="pay-badge">VISA / MC</span>
+              <span class="pay-badge">NetBanking</span>
+              <span class="pay-badge">COD</span>
+            </div>
+            <p class="footer-meta" style="margin-top:0.75rem;">Demo mode enabled — no real charges processed.</p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 AURELIA Retail Private Limited. All rights reserved.</span>
+          <span>Commercial eCommerce Portfolio Showcase</span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- FLOATING WHATSAPP CONCIERGE -->
+    <a class="whatsapp-fab" href="https://wa.me/919999999999?text=Hello%20AURELIA%2C%20I%20would%20like%20assistance%20with%20an%20order." target="_blank" rel="noopener" title="WhatsApp Concierge">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm5.77 14.01c-.24.68-1.42 1.3-1.95 1.38-.5.07-1.14.1-1.84-.12-.43-.14-.98-.32-1.69-.63-2.97-1.28-4.91-4.29-5.06-4.49-.15-.2-1.21-1.61-1.21-3.07 0-1.46.77-2.18 1.04-2.48.27-.3.6-.37.8-.37h.57c.18 0 .43-.07.67.51.24.59.84 2.04.91 2.19.07.15.12.33.02.53-.1.2-.15.32-.3.49-.15.17-.31.38-.44.51-.15.15-.3.31-.13.61.17.3.76 1.26 1.64 2.04 1.13 1 2.08 1.31 2.38 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.67-.15.27.1 1.74.82 2.04.97.3.15.5.22.57.35.07.12.07.72-.17 1.4z"/></svg>
+      <span>WhatsApp</span>
+    </a>
+  </main>
+
+  <!-- ==================== ADMIN DASHBOARD VIEW ==================== -->
+  <section id="view-admin" class="app-view">
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="admin-brand">
+          <strong>AURELIA</strong>
+          <span>COMMERCE ADMIN</span>
+        </div>
+        <nav class="admin-nav">
+          <button class="admin-tab active" data-admin="overview">Overview & Analytics</button>
+          <button class="admin-tab" data-admin="products">Products & Inventory</button>
+          <button class="admin-tab" data-admin="orders">Order Management</button>
+          <button class="admin-tab" data-admin="customers">Customers</button>
+          <button class="admin-tab" data-admin="coupons">Discounts & Coupons</button>
+        </nav>
+        <div class="admin-sidebar-footer">
+          <button class="btn btn-gold btn-block" onclick="exportOrdersCSV()">Export CSV Report</button>
+        </div>
+      </aside>
+
+      <div class="admin-main">
+        <!-- Overview -->
+        <div class="admin-panel active" id="admin-overview">
+          <div class="panel-header">
+            <div>
+              <h2>Executive Overview</h2>
+              <p>Live store & retail POS metrics synchronized in real time.</p>
+            </div>
+            <button class="btn btn-dark" onclick="openAddProductModal()">+ Add Product</button>
+          </div>
+          <div class="kpi-grid" id="adminKpis"></div>
+          <div class="charts-grid">
+            <div class="card">
+              <h3>Revenue Performance (INR)</h3>
+              <div class="chart-wrap"><canvas id="revenueChart"></canvas></div>
+            </div>
+            <div class="card">
+              <h3>Sales by Category</h3>
+              <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:1.5rem;">
+            <h3>Recent Transactions & Low-Stock Alerts</h3>
+            <div class="table-responsive" id="adminRecentTable"></div>
+          </div>
+        </div>
+
+        <!-- Products CRUD -->
+        <div class="admin-panel" id="admin-products">
+          <div class="panel-header">
+            <div>
+              <h2>Product & Inventory Management</h2>
+              <p>Changes reflect immediately on Storefront and Retail POS.</p>
+            </div>
+            <button class="btn btn-gold" onclick="openAddProductModal()">+ Add New Product</button>
+          </div>
+          <div class="card">
+            <div class="table-responsive" id="adminProductsTable"></div>
+          </div>
+        </div>
+
+        <!-- Orders -->
+        <div class="admin-panel" id="admin-orders">
+          <div class="panel-header">
+            <div>
+              <h2>Order Fulfillment & Invoices</h2>
+              <p>Confirm, ship, cancel (auto-restores stock), or download GST PDFs.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="table-responsive" id="adminOrdersTable"></div>
+          </div>
+        </div>
+
+        <!-- Customers -->
+        <div class="admin-panel" id="admin-customers">
+          <div class="panel-header">
+            <div>
+              <h2>Customer Directory</h2>
+              <p>Lifetime spend, order counts, and contact records.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="table-responsive" id="adminCustomersTable"></div>
+          </div>
+        </div>
+
+        <!-- Coupons -->
+        <div class="admin-panel" id="admin-coupons">
+          <div class="panel-header">
+            <div>
+              <h2>Discounts & Promo Codes</h2>
+              <p>Create percentage or flat rupee discounts with minimum spend rules.</p>
+            </div>
+          </div>
+          <div class="coupon-admin-grid">
+            <form class="card" id="createCouponForm">
+              <h3>Create New Coupon</h3>
+              <div class="form-group">
+                <label>Coupon Code</label>
+                <input type="text" id="newCouponCode" placeholder="e.g. FESTIVE15" required />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Type</label>
+                  <select id="newCouponType">
+                    <option value="percent">Percentage (%)</option>
+                    <option value="flat">Flat Amount (₹)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Value</label>
+                  <input type="number" id="newCouponValue" min="1" placeholder="15" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Min Order (₹)</label>
+                <input type="number" id="newCouponMin" min="0" value="1000" required />
+              </div>
+              <button type="submit" class="btn btn-gold btn-block">Create Coupon</button>
+            </form>
+            <div class="card">
+              <h3>Active Promo Codes</h3>
+              <div class="table-responsive" id="adminCouponsTable"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== RETAIL POS VIEW ==================== -->
+  <section id="view-pos" class="app-view">
+    <div class="container pos-wrapper">
+      <div class="pos-catalog">
+        <div class="pos-top-bar">
+          <div>
+            <h2>Retail POS Terminal</h2>
+            <p>Offline counter billing synced live with online inventory & GST ledger.</p>
+          </div>
+          <div class="pos-scan-box">
+            <input type="text" id="posSearchInput" placeholder="Scan SKU (e.g. AUR-101) or search item + Enter" />
+          </div>
+        </div>
+        <div class="pos-grid" id="posProductGrid"></div>
+      </div>
+
+      <aside class="pos-bill">
+        <div class="pos-bill-head">
+          <h3>Current Counter Bill</h3>
+          <button class="btn-text-danger" onclick="clearPosCart()">Clear</button>
+        </div>
+
+        <div class="pos-customer-row">
+          <input type="text" id="posCustName" placeholder="Customer Name (Walk-in)" value="Walk-in Customer" />
+          <input type="tel" id="posCustPhone" placeholder="Mobile (Optional)" />
+        </div>
+
+        <div class="pos-items" id="posCartItems"></div>
+
+        <div class="pos-controls">
+          <div class="pos-inline-input">
+            <label>Counter Discount (%)</label>
+            <input type="number" id="posDiscountPct" min="0" max="50" value="0" oninput="renderPosCart()" />
+          </div>
+          <div class="pos-inline-input">
+            <label>Payment Mode</label>
+            <select id="posPaymentMethod" onchange="toggleCashTender()">
+              <option value="UPI">UPI / QR</option>
+              <option value="Cash">Cash</option>
+              <option value="Card">Debit / Credit Card</option>
+            </select>
+          </div>
+          <div class="pos-inline-input" id="posCashWrap" style="display:none;">
+            <label>Cash Received (₹)</label>
+            <input type="number" id="posCashTendered" placeholder="Enter amount" oninput="renderPosCart()" />
+          </div>
+        </div>
+
+        <div class="pos-totals" id="posTotals"></div>
+
+        <button class="btn btn-gold btn-block btn-lg" onclick="completePosSale()">Complete Sale & Generate Bill</button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ==================== GST INVOICES CENTER VIEW ==================== -->
+  <section id="view-invoices" class="app-view">
+    <div class="container section">
+      <div class="section-head">
+        <div>
+          <span class="section-eyebrow">INDIAN GST BILLING LEDGER</span>
+          <h2>Invoices & Tax Receipts</h2>
+        </div>
+        <button class="btn btn-dark" onclick="exportOrdersCSV()">Download Ledger CSV</button>
+      </div>
+      <div class="card">
+        <div class="table-responsive" id="invoicesLedgerTable"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== MODALS & DRAWERS ==================== -->
+  <!-- CART DRAWER -->
+  <div class="drawer-backdrop" id="cartBackdrop" onclick="closeCart()"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping Bag">
+    <div class="drawer-header">
+      <h3>Shopping Bag (<span id="drawerCartCount">0</span>)</h3>
+      <button class="close-btn" onclick="closeCart()">×</button>
+    </div>
+    <div class="drawer-body" id="cartItemsList"></div>
+    <div class="drawer-footer">
+      <div class="coupon-row">
+        <input type="text" id="cartCouponInput" placeholder="Coupon code (WELCOME10)" />
+        <button class="btn btn-dark-sm" onclick="applyCartCoupon()">Apply</button>
+      </div>
+      <div class="cart-summary" id="cartSummary"></div>
+      <button class="btn btn-gold btn-block btn-lg" id="btnProceedCheckout" onclick="openCheckoutModal()">Proceed to Checkout</button>
+    </div>
+  </aside>
+
+  <!-- PRODUCT DETAIL MODAL -->
+  <div class="modal-backdrop" id="productModal">
+    <div class="modal-card modal-xl">
+      <button class="modal-close" onclick="closeModal('productModal')">×</button>
+      <div id="productModalBody"></div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="modal-backdrop" id="checkoutModal">
+    <div class="modal-card modal-lg">
+      <button class="modal-close" onclick="closeModal('checkoutModal')">×</button>
+      <div id="checkoutModalBody"></div>
+    </div>
+  </div>
+
+  <!-- GST INVOICE MODAL -->
+  <div class="modal-backdrop" id="invoiceModal">
+    <div class="modal-card modal-lg">
+      <button class="modal-close no-print" onclick="closeModal('invoiceModal')">×</button>
+      <div id="invoiceModalBody"></div>
+    </div>
+  </div>
+
+  <!-- ACCOUNT MODAL -->
+  <div class="modal-backdrop" id="accountModal">
+    <div class="modal-card modal-md">
+      <button class="modal-close" onclick="closeModal('accountModal')">×</button>
+      <div id="accountModalBody"></div>
+    </div>
+  </div>
+
+  <!-- ADD PRODUCT MODAL -->
+  <div class="modal-backdrop" id="addProductModal">
+    <div class="modal-card modal-md">
+      <button class="modal-close" onclick="closeModal('addProductModal')">×</button>
+      <h3 style="margin-bottom:1rem;">Add New Product</h3>
+      <form id="addProductForm">
+        <div class="form-row">
+          <div class="form-group"><label>Product Name</label><input type="text" id="pName" required /></div>
+          <div class="form-group"><label>SKU Code</label><input type="text" id="pSku" placeholder="AUR-109" required /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="pCategory">
+              <option>Watches</option><option>Electronics</option><option>Fashion</option><option>Home</option><option>Accessories</option>
+            </select>
+          </div>
+          <div class="form-group"><label>HSN Code</label><input type="text" id="pHsn" value="9102" required /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="pPrice" min="1" required /></div>
+          <div class="form-group"><label>MRP (₹)</label><input type="number" id="pMrp" min="1" required /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Stock Qty</label><input type="number" id="pStock" min="0" value="20" required /></div>
+          <div class="form-group">
+            <label>GST Rate (%)</label>
+            <select id="pGst"><option value="18">18%</option><option value="12">12%</option><option value="5">5%</option><option value="28">28%</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label>Image URL</label><input type="url" id="pImage" placeholder="https://images.unsplash.com/..." required /></div>
+        <div class="form-group"><label>Description</label><textarea id="pDesc" rows="2" required></textarea></div>
+        <button type="submit" class="btn btn-gold btn-block">Save Product</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
